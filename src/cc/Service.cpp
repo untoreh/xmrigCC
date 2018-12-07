@@ -571,11 +571,16 @@ void Service::sendServerStatusPush(uint64_t now)
 
 void Service::triggerPush(const std::string& title, const std::string& message)
 {
-    sendViaPushover(title, message);
-    sendViaTelegram(title, message);
+    if (Options::i()->ccUsePushover()) {
+        sendViaPushover(title, message);
+    }
+
+    if (Options::i()->ccUseTelegram()) {
+        sendViaTelegram(title, message);
+    }
 }
 
-void Service::sendViaTelegram(const std::string &title, const std::string &message)
+void Service::sendViaPushover(const std::string &title, const std::string &message)
 {
     std::shared_ptr<httplib::Client> cli = std::make_shared<httplib::SSLClient>("api.pushover.net", 443);
 
@@ -591,7 +596,7 @@ void Service::sendViaTelegram(const std::string &title, const std::string &messa
     }
 }
 
-void Service::sendViaPushover(const std::string &title, const std::string &message)
+void Service::sendViaTelegram(const std::string &title, const std::string &message)
 {
     std::shared_ptr<httplib::Client> cli = std::make_shared<httplib::SSLClient>("api.telegram.org", 443);
 
