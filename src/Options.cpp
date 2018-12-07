@@ -584,12 +584,12 @@ bool Options::parseArg(int key, const char *arg)
 
     case 4014: /* --cc-cert-file */
         free(m_ccCertFile);
-            m_ccCertFile = strdup(arg);
+        m_ccCertFile = strdup(arg);
         break;
 
     case 4015: /* --cc-key-file */
         free(m_ccKeyFile);
-            m_ccKeyFile = strdup(arg);
+        m_ccKeyFile = strdup(arg);
         break;
 
     case 4011: /* --daemonized */
@@ -642,19 +642,29 @@ bool Options::parseArg(int key, const char *arg)
         return parseAsmOptimization(arg);
 
     case 4021: /* --cc-reboot-cmd */
+        free(m_ccRebootCmd);
         m_ccRebootCmd = strdup(arg);
+        break;
 
     case 4022: /* --cc-pushover-user-key */
+        free(m_ccPushoverUser);
         m_ccPushoverUser = strdup(arg);
+        break;
 
     case 4023: /* --cc-pushover-api-token */
+        free(m_ccPushoverToken);
         m_ccPushoverToken = strdup(arg);
+        break;
 
     case 4027: /* --cc-telegram-bot-token */
+        free(m_ccTelegramBotToken);
         m_ccTelegramBotToken = strdup(arg);
+        break;
 
     case 4028: /* --cc-telegram-chat-id */
+        free(m_ccTelegramChatId);
         m_ccTelegramChatId = strdup(arg);
+        break;
 
     case 4024: /* --cc-push-miner-offline-info */
         return parseBoolean(key, false);
