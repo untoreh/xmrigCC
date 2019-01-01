@@ -1236,7 +1236,7 @@ void Options::optimizeAlgorithmConfiguration()
         m_hashFactor = 3;
     }
 
-    Cpu::optimizeParameters(m_threads, m_hashFactor, m_algo, m_powVariant, m_maxCpuUsage, m_safe);
+    Cpu::optimizeParameters(m_threads, m_hashFactor, m_algo, m_powVariant, m_safe);
 }
 
 bool Options::parseCCUrl(const char* url)

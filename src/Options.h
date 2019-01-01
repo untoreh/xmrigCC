@@ -117,6 +117,7 @@ public:
     inline size_t ccClientLogLinesHistory() const   { return m_ccClientLogLinesHistory; }
     inline int64_t affinity() const                 { return m_affinity; }
     inline int64_t multiHashThreadMask() const      { return m_multiHashThreadMask; }
+    inline size_t maxCpuUsage() const               { return m_maxCpuUsage; }
     inline void setColors(bool colors)              { m_colors = colors; }
 
     inline static void release()                    { delete m_self; }

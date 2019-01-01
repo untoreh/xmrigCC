@@ -103,6 +103,9 @@ MultiWorker::~MultiWorker()
 void MultiWorker::start()
 {
     const size_t memory  = scratchPadMem.realSize / 1048576;
+    const AsmOptimization asmOptimization = Options::i()->asmOptimization();
+
+    const auto cpuSleepTime = (100 - Options::i()->maxCpuUsage()) * 100000;
 
     if (Options::i()->colors()) {
         LOG_INFO(WHITE_BOLD("Starting thread ") GREEN_BOLD("%zu/%zu") " affined to core: " GREEN_BOLD("#%d") " -> huge pages:" GREEN_BOLD(" %s%zu/%zu") " scratchpad: " CYAN_BOLD("%zu.0 MB"),
@@ -140,7 +143,7 @@ void MultiWorker::start()
                 *Job::nonce(m_state->blob + i * m_state->job.size()) = ++m_state->nonces[i];
             }
 
-            CryptoNight::hash(m_hashFactor, Options::i()->asmOptimization(), m_state->job.powVariant(), m_state->blob, m_state->job.size(), m_hash, scratchPads);
+            CryptoNight::hash(m_hashFactor, asmOptimization, m_state->job.powVariant(), m_state->blob, m_state->job.size(), m_hash, scratchPads);
 
             for (size_t i=0; i < m_hashFactor; ++i) {
                 if (*reinterpret_cast<uint64_t *>(m_hash + 24 + i * 32) < m_state->job.target()) {
@@ -149,7 +152,11 @@ void MultiWorker::start()
                 }
             }
 
-            std::this_thread::yield();
+            if (cpuSleepTime > 0) {
+                std::this_thread::sleep_for(std::chrono::nanoseconds(cpuSleepTime));
+            } else {
+                std::this_thread::yield();
+            }
         }
 
         consumeJob();

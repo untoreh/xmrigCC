@@ -52,8 +52,7 @@ CpuImpl::CpuImpl()
 {
 }
 
-void CpuImpl::optimizeParameters(size_t& threadsCount, size_t& hashFactor,
-                                 Options::Algo algo, PowVariant powVariant, size_t maxCpuUsage, bool safeMode)
+void CpuImpl::optimizeParameters(size_t& threadsCount, size_t& hashFactor, Options::Algo algo, PowVariant powVariant, bool safeMode)
 {
     // limits hashfactor to maximum possible value defined by compiler flag
     hashFactor = std::min(hashFactor, (algo == Options::ALGO_CRYPTONIGHT_HEAVY || powVariant == POW_XFH) ? 3 : static_cast<size_t>(MAX_NUM_HASH_BLOCKS));
@@ -101,10 +100,6 @@ void CpuImpl::optimizeParameters(size_t& threadsCount, size_t& hashFactor,
             threadsCount = std::min(maximumReasonableThreadCount,
                                     maximumReasonableFactor / hashFactor);
         }
-        if (maxCpuUsage < 100)
-        {
-            threadsCount = std::min(threadsCount, m_totalThreads * maxCpuUsage / 100);
-        }
         threadsCount = std::max(threadsCount, static_cast<size_t>(1));
     }
 
@@ -141,10 +136,9 @@ void Cpu::init()
     CpuImpl::instance().init();
 }
 
-void Cpu::optimizeParameters(size_t& threadsCount, size_t& hashFactor, Options::Algo algo, PowVariant powVariant,
-                               size_t maxCpuUsage, bool safeMode)
+void Cpu::optimizeParameters(size_t& threadsCount, size_t& hashFactor, Options::Algo algo, PowVariant powVariant, bool safeMode)
 {
-    CpuImpl::instance().optimizeParameters(threadsCount, hashFactor, algo, powVariant, maxCpuUsage, safeMode);
+    CpuImpl::instance().optimizeParameters(threadsCount, hashFactor, algo, powVariant, safeMode);
 }
 
 int Cpu::setThreadAffinity(size_t threadId, int64_t affinityMask)

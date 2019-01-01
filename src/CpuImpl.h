@@ -39,7 +39,7 @@ public:
     void init();
 
     void optimizeParameters(size_t& threadsCount, size_t& hashFactor, Options::Algo algo, PowVariant powVariant,
-                            size_t maxCpuUsage, bool safeMode);
+                            bool safeMode);
     int setThreadAffinity(size_t threadId, int64_t affinityMask);
 
     bool hasAES();
