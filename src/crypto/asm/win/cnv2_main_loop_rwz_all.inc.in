@@ -15,7 +15,7 @@
 	mov	 rax, QWORD PTR [rcx+48]
 	mov	 r9, rcx
 	xor	 rax, QWORD PTR [rcx+16]
-	mov	 esi, 393216
+	mov	 esi, ${ITERATIONS}
 	mov	 r8, QWORD PTR [rcx+32]
 	mov	 r13d, -2147483647
 	xor	 r8, QWORD PTR [rcx]
@@ -35,7 +35,7 @@
 	movaps	 XMMWORD PTR [rsp+64], xmm6
 	movaps	 XMMWORD PTR [rsp+48], xmm7
 	movaps	 XMMWORD PTR [rsp+32], xmm8
-	and	 r10d, 2097136
+	and	 r10d, ${MASK}
 	movd	 xmm5, rax
 
 	xor eax, eax
@@ -51,7 +51,7 @@
 	movdqu	 xmm6, XMMWORD PTR [r10+rbx]
 
 	ALIGN(64)
-rwz_main_loop:
+rwz_main_loop_${ALGO}:
 	lea	 rdx, QWORD PTR [r10+rbx]
 	mov	 ecx, r10d
 	mov	 eax, r10d
@@ -65,7 +65,7 @@ rwz_main_loop:
 	aesenc	 xmm6, xmm7
 	movd	 rbp, xmm6
 	mov	 r9, rbp
-	and	 r9d, 2097136
+	and	 r9d, ${MASK}
 	movdqu	 xmm0, XMMWORD PTR [rcx+rbx]
 	movdqu	 xmm1, XMMWORD PTR [rax+rbx]
 	movdqu	 xmm2, XMMWORD PTR [r10+rbx]
@@ -109,9 +109,9 @@ rwz_main_loop:
 	psubq	 xmm3, XMMWORD PTR [rsp+16]
 	movd	 rdx, xmm3
 	test	 edx, 524287
-	je	 rwz_sqrt_fixup
+	je	 rwz_sqrt_fixup_${ALGO}
 	psrlq	 xmm3, 19
-rwz_sqrt_fixup_ret:
+rwz_sqrt_fixup_${ALGO}_ret:
 
 	mov	 ecx, r10d
 	mov	 rax, rdi
@@ -122,7 +122,7 @@ rwz_sqrt_fixup_ret:
 	mov	 QWORD PTR [r14], r8
 	xor	 r8, rdi
 	mov edi, r8d
-	and edi, 2097136
+	and edi, ${MASK}
 	movd xmm0, rax
 	xor rax, [rcx+rbx+8]
 	add	 r11, rax
@@ -147,7 +147,7 @@ rwz_sqrt_fixup_ret:
 	mov	 r10d, edi
 	xor	 r11, r12
 	dec rsi
-	jne	 rwz_main_loop
+	jne	 rwz_main_loop_${ALGO}
 
 	ldmxcsr DWORD PTR [rsp]
 	mov	 rbx, QWORD PTR [rsp+160]
@@ -162,9 +162,9 @@ rwz_sqrt_fixup_ret:
 	pop	 rdi
 	pop	 rsi
 	pop	 rbp
-	jmp cnv2_rwz_main_loop_endp
+	jmp cnv2_rwz_main_loop_${ALGO}_endp
 
-rwz_sqrt_fixup:
+rwz_sqrt_fixup_${ALGO}:
 	dec	 rdx
 	mov r13d, -1022
 	shl r13, 32
@@ -181,6 +181,6 @@ rwz_sqrt_fixup:
 	sub	 rcx, r9
 	adc	 rdx, 0
 	movd	 xmm3, rdx
-	jmp	 rwz_sqrt_fixup_ret
+	jmp	 rwz_sqrt_fixup_${ALGO}_ret
 
-cnv2_rwz_main_loop_endp:
+cnv2_rwz_main_loop_${ALGO}_endp:

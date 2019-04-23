@@ -358,7 +358,7 @@ rwz_sqrt_fix_2_${ALGO}_ret:
 	pop	rsi
 	pop	rbp
 	pop	rbx
-	jmp rwz_cnv2_double_mainloop_asm_${ALGO}_endp
+	jmp rwz_cnv2_double_mainloop_${ALGO}_asm_endp
 
 rwz_div_fix_1_${ALGO}:
 	dec	rbx
@@ -411,4 +411,4 @@ rwz_sqrt_fix_2_${ALGO}:
 	punpcklqdq xmm5, xmm0
 	jmp	rwz_sqrt_fix_2_${ALGO}_ret
 
-rwz_cnv2_double_mainloop_asm_${ALGO}_endp:
+rwz_cnv2_double_mainloop_${ALGO}_asm_endp:

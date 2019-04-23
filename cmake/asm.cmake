@@ -139,8 +139,8 @@ set(MASK "2097136") #0x1FFFF0
 configure_file("src/crypto/asm/cnv2_main_loop_rwz_all.inc.in" "src/crypto/asm/cnv2_main_loop_rwz_original_all.inc")
 configure_file("src/crypto/asm/cnv2_double_main_loop_rwz_all.inc.in" "src/crypto/asm/cnv2_double_main_loop_rwz_original_all.inc")
 
-#configure_file("src/crypto/asm/win/cnv2_main_loop_ivybridge.inc.in" "src/crypto/asm/win/cnv2_main_loop_ultralite_ivybridge.inc")
-#configure_file("src/crypto/asm/win/cnv2_double_main_loop_sandybridge.inc.in" "src/crypto/asm/win/cnv2_double_main_loop_ultralite_sandybridge.inc")
+configure_file("src/crypto/asm/win/cnv2_main_loop_rwz_all.inc.in" "src/crypto/asm/win/cnv2_main_loop_rwz_original_all.inc")
+configure_file("src/crypto/asm/win/cnv2_double_main_loop_rwz_all.inc.in" "src/crypto/asm/win/cnv2_double_main_loop_rwz_original_all.inc")
 
 
 # CN V2 UPX2
@@ -151,8 +151,8 @@ set(MASK "131056") #0x1FFF0
 configure_file("src/crypto/asm/cnv2_main_loop_rwz_all.inc.in" "src/crypto/asm/cnv2_main_loop_rwz_upx2_all.inc")
 configure_file("src/crypto/asm/cnv2_double_main_loop_rwz_all.inc.in" "src/crypto/asm/cnv2_double_main_loop_rwz_upx2_all.inc")
 
-#configure_file("src/crypto/asm/win/cnv2_main_loop_ivybridge.inc.in" "src/crypto/asm/win/cnv2_main_loop_ultralite_ivybridge.inc")
-#configure_file("src/crypto/asm/win/cnv2_double_main_loop_sandybridge.inc.in" "src/crypto/asm/win/cnv2_double_main_loop_ultralite_sandybridge.inc")
+configure_file("src/crypto/asm/win/cnv2_main_loop_rwz_all.inc.in" "src/crypto/asm/win/cnv2_main_loop_rwz_upx2_all.inc")
+configure_file("src/crypto/asm/win/cnv2_double_main_loop_rwz_all.inc.in" "src/crypto/asm/win/cnv2_double_main_loop_rwz_upx2_all.inc")
 
 if (CMAKE_C_COMPILER_ID MATCHES MSVC)
     enable_language(ASM_MASM)
