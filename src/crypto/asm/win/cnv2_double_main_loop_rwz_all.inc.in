@@ -249,7 +249,7 @@ rwz_main_loop_double_${ALGO}:
 	mov	rbx, rax
 	imul	rax, rdx
 	sub	r11, rax
-	js	rwz_div_fix_1
+	js	rwz_div_fix_1_${ALGO}
 rwz_div_fix_1_${ALGO}_ret:
 
 	cvttsd2si rdx, xmm2
