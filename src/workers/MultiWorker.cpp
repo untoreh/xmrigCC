@@ -40,6 +40,7 @@ public:
     ~MultiWorker();
 
     void start() override;
+    void allocateRandomX_VM();
 
 private:
     bool resume(const Job &job);
@@ -52,6 +53,7 @@ private:
     State *m_state;
     State *m_pausedState;
     size_t m_hashFactor;
+    randomx_vm* m_rx_vm;
 
     ScratchPadMem scratchPadMem;
     ScratchPad* scratchPads[MAX_NUM_HASH_BLOCKS];
@@ -86,7 +88,8 @@ MultiWorker::MultiWorker(Handle *handle, size_t hashFactor)
       m_hash(new uint8_t[32 * hashFactor]),
       m_state(new MultiWorker::State(hashFactor)),
       m_pausedState(new MultiWorker::State(hashFactor)),
-      m_hashFactor(hashFactor)
+      m_hashFactor(hashFactor),
+      m_rx_vm(nullptr)
 {
     scratchPadMem = Mem::create(scratchPads, m_id);
 }
@@ -98,6 +101,20 @@ MultiWorker::~MultiWorker()
     delete m_pausedState;
 
     Mem::release(scratchPads, scratchPadMem, m_id);
+    if (m_rx_vm) {
+      randomx_destroy_vm(m_rx_vm);
+    }
+}
+
+void MultiWorker::allocateRandomX_VM()
+{
+  if (!m_rx_vm) {
+    const int flags = RANDOMX_FLAG_LARGE_PAGES | RANDOMX_FLAG_HARD_AES | RANDOMX_FLAG_FULL_MEM | RANDOMX_FLAG_JIT;
+    m_rx_vm = randomx_create_vm(static_cast<randomx_flags>(flags), nullptr, Workers::getDataset());
+    if (!m_rx_vm) {
+      m_rx_vm = randomx_create_vm(static_cast<randomx_flags>(flags - RANDOMX_FLAG_LARGE_PAGES), nullptr, Workers::getDataset());
+    }
+  }
 }
 
 void MultiWorker::start()
@@ -135,20 +152,28 @@ void MultiWorker::start()
                 storeStats();
             }
 
-            m_count += m_hashFactor;
-
             for (size_t i=0; i < m_hashFactor; ++i) {
-                *Job::nonce(m_state->blob + i * m_state->job.size()) = ++m_state->nonces[i];
+              *Job::nonce(m_state->blob + i * m_state->job.size()) = ++m_state->nonces[i];
+              }
+
+            const PowVariant v = m_state->job.powVariant();
+            if (v == PowVariant::POW_WOW) {
+              allocateRandomX_VM();
+              Workers::updateDataset(m_state->job.seed_hash(), m_threads);
+              randomx_calculate_hash(m_rx_vm, m_state->blob, m_state->job.size(), m_hash);
             }
-
-            CryptoNight::hash(m_hashFactor, Options::i()->asmOptimization(), m_state->job.height(), m_state->job.powVariant(), m_state->blob, m_state->job.size(), m_hash, scratchPads);
-
+            else {
+              CryptoNight::hash(m_hashFactor, Options::i()->asmOptimization(), m_state->job.height(), v, m_state->blob, m_state->job.size(), m_hash, scratchPads);
+            }
             for (size_t i=0; i < m_hashFactor; ++i) {
+              // LOG_INFO("factor: %d, hash: %u, target: %d", m_hashFactor, reinterpret_cast<uint64_t *>(m_hash+24+i*32), m_state->job.target());
                 if (*reinterpret_cast<uint64_t *>(m_hash + 24 + i * 32) < m_state->job.target()) {
                     Workers::submit(JobResult(m_state->job.poolId(), m_state->job.id(), m_state->nonces[i], m_hash + i * 32,
                                               m_state->job.diff()), m_id);
                 }
             }
+
+            m_count += m_hashFactor;
 
             std::this_thread::yield();
         }

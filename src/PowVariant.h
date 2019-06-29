@@ -45,6 +45,7 @@ enum PowVariant
     POW_ZELERIUS,
     POW_RWZ,
     POW_UPX2,
+    POW_RX,
     LAST_ITEM
 };
 
@@ -206,6 +207,7 @@ inline PowVariant getBaseVariant(PowVariant powVariant)
             return POW_V2;
 
         case POW_WOW:
+            return POW_RX;
         case POW_V4:
             return POW_V4;
         default:

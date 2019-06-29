@@ -41,6 +41,7 @@ public:
 
     bool setBlob(const char *blob);
     bool setTarget(const char *target);
+    bool setSeedHash(const char *hash);
     PowVariant powVariant() const;
 
     inline bool isNicehash() const         { return m_nicehash; }
@@ -49,6 +50,7 @@ public:
     inline const JobId &id() const         { return m_id; }
     inline const uint32_t *nonce() const   { return reinterpret_cast<const uint32_t*>(m_blob + 39); }
     inline const uint8_t *blob() const     { return m_blob; }
+    inline const uint8_t *seed_hash() const { return m_seedHash; }
     inline int poolId() const              { return m_poolId; }
     inline size_t size() const             { return m_size; }
     inline uint32_t *nonce()               { return reinterpret_cast<uint32_t*>(m_blob + 39); }
@@ -78,6 +80,7 @@ private:
     size_t m_size;
     uint64_t m_diff;
     uint64_t m_target;
+    uint8_t m_seedHash[32];
     uint64_t m_height;
     PowVariant m_powVariant;
 };

@@ -260,6 +260,14 @@ bool Client::parseJob(const rapidjson::Value &params, int *code)
 
     job.setPowVariant(powVariant);
 
+    if (params.HasMember("seed_hash")) {
+      const rapidjson::Value &variant = params["seed_hash"];
+
+      if (variant.IsString()) {
+        job.setSeedHash(variant.GetString());
+      }
+    }
+
     if (params.HasMember("height")) {
         const rapidjson::Value &variant = params["height"];
 

@@ -62,6 +62,7 @@ Job::Job(int poolId, bool nicehash) :
     m_size(0),
     m_diff(0),
     m_target(0),
+    m_seedHash(),
     m_height(0),
     m_powVariant(PowVariant::POW_AUTODETECT)
 {
@@ -135,6 +136,14 @@ bool Job::setTarget(const char *target)
 
     m_diff = toDiff(m_target);
     return true;
+}
+
+bool Job::setSeedHash(const char *hash)
+{
+  if (!hash || (strlen(hash) != sizeof(m_seedHash) * 2))
+    return false;
+
+  return fromHex(hash, sizeof(m_seedHash) * 2, m_seedHash);
 }
 
 PowVariant Job::powVariant() const

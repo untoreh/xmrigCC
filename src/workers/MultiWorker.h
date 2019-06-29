@@ -29,7 +29,7 @@
 #include "net/Job.h"
 #include "net/JobResult.h"
 #include "workers/Worker.h"
-
+#include "randomx.h"
 
 class Handle;
 

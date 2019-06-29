@@ -309,7 +309,8 @@ static const char *algo_names[] = {
     "cryptonight-superlite",
     "cryptonight-ultralite",
     "cryptonight-extremelite",
-    "cryptonight-heavy"
+    "cryptonight-heavy",
+    "randomx"
 };
 
 static const char *algo_short_names[] = {
@@ -318,7 +319,8 @@ static const char *algo_short_names[] = {
         "cn-superlite",
         "cn-ultralite",
         "cn-extremelite",
-        "cn-heavy"
+        "cn-heavy",
+        "rx"
 };
 
 constexpr static const char *pow_variant_names[] = {
@@ -1107,7 +1109,12 @@ bool Options::setAlgo(const char *algo)
             break;
         }
 
-        if (i == ARRAY_SIZE(algo_names) - 1 && (!strcmp(algo, "cn-lite") || !strcmp(algo, "cryptonight-light"))) {
+        if (i == ARRAY_SIZE(algo_names) - 1 && (!strcmp(algo, "rx") || !strcmp(algo, "randomx"))) {
+          m_algo = ALGO_CRYPTONIGHT;
+          break;
+        }
+
+        if (i == ARRAY_SIZE(algo_names) - 1 && (!strcmp(algo, "cn-lite") || !strcmp(algo, "cryptonight-light") || !strcmp(algo, "rx-lite"))) {
             m_algo = ALGO_CRYPTONIGHT_LITE;
             break;
         }

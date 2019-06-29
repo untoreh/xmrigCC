@@ -32,6 +32,7 @@
 
 #include "net/Job.h"
 #include "net/JobResult.h"
+#include "randomx.h"
 
 
 class Handle;
@@ -57,6 +58,9 @@ public:
     static inline void pause()                                   { m_active = false; m_paused = 1; m_sequence++; }
     static inline void setListener(IJobResultListener *listener) { m_listener = listener; }
 
+    static void updateDataset(const uint8_t* seed_hash, uint32_t num_threads);
+    static randomx_dataset* getDataset();
+
 private:
     static void onReady(void *arg);
     static void onResult(uv_async_t *handle);
@@ -76,6 +80,12 @@ private:
     static uv_mutex_t m_mutex;
     static uv_rwlock_t m_rwlock;
     static uv_timer_t m_timer;
+
+    static uv_rwlock_t m_rx_dataset_lock;
+    static randomx_cache *m_rx_cache;
+    static randomx_dataset *m_rx_dataset;
+    static uint8_t m_rx_seed_hash[32];
+    static std::atomic<uint32_t> m_rx_dataset_init_thread_counter;
 };
 
 

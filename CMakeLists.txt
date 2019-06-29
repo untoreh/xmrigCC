@@ -127,6 +127,7 @@ add_compile_options(-fexceptions)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 find_package(UV REQUIRED)
+find_package(RandomX REQUIRED)
 
 if (WIN32)
     add_definitions(-DBOOST_ALL_NO_LIB)
@@ -232,6 +233,7 @@ endif(BUILD_STATIC)
 include_directories(src)
 include_directories(src/3rdparty)
 include_directories(${UV_INCLUDE_DIR})
+include_directories(${RANDOMX_INCLUDE_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_library(xmrig_common STATIC ${SOURCES_COMMON})
@@ -250,7 +252,7 @@ add_executable(xmrigMiner ${SOURCES} ${SOURCES_CRYPTO} ${HTTPD_SOURCES} ${SOURCE
 set_target_properties(xmrigMiner PROPERTIES OUTPUT_NAME ${MINER_EXECUTABLE_NAME})
 
 target_link_libraries(xmrigMiner xmrig_common xmrig_os_dependencies xmrig_cpuid ${Boost_LIBRARIES}
-        ${UV_LIBRARIES} ${MHD_LIBRARY} ${EXTRA_LIBS} ${CPUID_LIB})
+        ${UV_LIBRARIES} ${MHD_LIBRARY} ${RANDOMX_LIBRARIES} ${EXTRA_LIBS} ${CPUID_LIB})
 
 if (WITH_CC_CLIENT)
     target_link_libraries(xmrigMiner xmrig_cc_common)
